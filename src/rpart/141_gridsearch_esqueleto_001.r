@@ -11,7 +11,8 @@ require("parallel")
 
 PARAM <- list()
 # reemplazar por las propias semillas
-semillas <- c(143821, 168977, 185869, 211153, 227507)
+PARAM$semillas <- c(143821, 168977, 185869, 211153, 227507)
+semillas <- PARAM$semillas
 
 #------------------------------------------------------------------------------
 # particionar agrega una columna llamada fold a un dataset
@@ -19,7 +20,7 @@ semillas <- c(143821, 168977, 185869, 211153, 227507)
 # particionar( data=dataset, division=c(70,30), agrupa=clase_ternaria, seed=semilla)
 #   crea una particion 70, 30
 
-particionar <- function(data, division, agrupa = "", campo = "fold", start = 1, seed = NA) {
+particionar <- function(data, division, agrupa = "", campo = "fold", start = 1, seed = NULL) {
   if (!is.na(seed)) set.seed(seed)
 
   bloque <- unlist(mapply(function(x, y) {
@@ -34,7 +35,7 @@ particionar <- function(data, division, agrupa = "", campo = "fold", start = 1, 
 
 ArbolEstimarGanancia <- function(semillas, param_basicos) {
   # particiono estratificadamente el dataset
-  particionar(dataset, division = c(7, 3), agrupa = "clase_ternaria", seed = semilla)
+  particionar(dataset, division = c(7, 3), agrupa = "clase_ternaria", seed = semillas)
 
   # genero el modelo
   # quiero predecir clase_ternaria a partir del resto
@@ -121,7 +122,7 @@ cat(
 for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
   for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
     for (vcp in c(-0.5, -0.003, 0.00, 0.5)) {
-      for (vmin_bucket in c(5, 6, 7, 9, 12, 14)) {
+      for (vmin_bucket in c(500, 400, 300, 200, 100, 50, 10)) {
     
         # Definir parámetros básicos
         param_basicos <- list(
