@@ -21,20 +21,22 @@ semillas <- PARAM$semillas
 # ternaria, seed=semilla)
 #   crea una particion 70, 30
 
-particionar <- function(data, division, agrupa = "",
-                        campo = "fold", start = 1, seed = NA) {
+particionar <- function(data, division, agrupa = "", campo = "fold", start = 1, seed = NA) {
   if (!is.na(seed)) set.seed(seed)
 
   bloque <- unlist(mapply(function(x, y) {
     rep(y, x)
   }, division, seq(from = start, length.out = length(division))))
-  data[, (campo) := sample(rep(bloque, ceiling(.N / length(bloque))))[seq_len(.N)], by = agrupa]
+
+  data[, (campo) := sample(rep(bloque, ceiling(.N / length(bloque))))[1:.N],
+    by = agrupa
+  ]
 }
 #------------------------------------------------------------------------------
 
-ArbolEstimarGanancia <- function(semillas, param_basicos) {
+ArbolEstimarGanancia <- function(semilla, param_basicos) {
   # particiono estratificadamente el dataset
-  particionar(dataset, division = c(7, 3), agrupa = "clase_ternaria", seed = semillas)
+  particionar(dataset, division = c(7, 3), agrupa = "clase_ternaria", seed = semilla)
 
   # genero el modelo
   # quiero predecir clase_ternaria a partir del resto
@@ -89,11 +91,11 @@ ArbolesMontecarlo <- function(semillas, param_basicos) {
 #------------------------------------------------------------------------------
 
 # Aqui se debe poner la carpeta de la computadora local
-setwd("~/buckets/b1/") # Establezco el Working Directory
+setwd("~/Documents/") # Establezco el Working Directory
 # cargo los datos
 
 # cargo los datos
-dataset <- fread("./datasets/dataset_pequeno.csv")
+dataset <- fread("/home/vielma_jesused182/Documents/Gridsearch_doc/dataset_pequeno.csv")
 
 # trabajo solo con los datos con clase, es decir 202107
 dataset <- dataset[clase_ternaria != ""]
@@ -101,9 +103,10 @@ dataset <- dataset[clase_ternaria != ""]
 # genero el archivo para Kaggle
 # creo la carpeta donde va el experimento
 # HT  representa  Hiperparameter Tuning
-dir.create("./exp/", showWarnings = FALSE)
-dir.create("./exp/gridsearch/", showWarnings = FALSE)
-archivo_salida <- "./exp/gridsearch/primergrid.txt"
+#dir.create("./exp/", showWarnings = FALSE)
+#dir.create("./exp/gridsearch/", showWarnings = FALSE)
+archivo_salida <- "/home/vielma_jesused182/Documents/Gridsearch_doc/primer_grid.txt
+"
 
 # Escribo los titulos al archivo donde van a quedar los resultados
 # atencion que si ya existe el archivo, esta instruccion LO SOBREESCRIBE,
