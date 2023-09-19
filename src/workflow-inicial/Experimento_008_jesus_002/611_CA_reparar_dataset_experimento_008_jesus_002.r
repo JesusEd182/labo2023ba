@@ -220,6 +220,17 @@ dataset <- fread(PARAM$dataset)
 # tmobile_app se daño a partir de 202010
 dataset[, tmobile_app := NULL]
 
+#agregamos al dataset la columna de weights para hacer un descenso logaritmicamente ponderado
+dataset[, weights := 1]
+mes_mas_reciente <- max(dataset$foto_mes)
+# Define el valor de escala (ajusta según sea necesario)
+escala <- 1.0 
+# Calcula los pesos utilizando una caída exponencial inversa
+dataset$weights <- exp(-abs(dataset$foto_mes - mes_mas_reciente) / escala) * dataset$weights
+#head(dataset$weights)
+#tail(dataset$weights)
+#print(dataset$weights[dataset$foto_mes==202101])
+
 
 # creo la carpeta donde va el experimento
 dir.create(paste0("./exp/", PARAM$experimento, "/"), showWarnings = FALSE)
