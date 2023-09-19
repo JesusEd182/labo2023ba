@@ -13,15 +13,6 @@ PARAM <- list()
 PARAM$experimento <- "CA6110_JV_008_002"
 PARAM$dataset <- "./datasets/competencia_2023.csv.gz"
 
-#agregamos al dataset la columna de weights para hacer un descenso logaritmicamente ponderado
-
-dataset <- fread(PARAM$dataset)
-dataset[, weights := 1]
-mes_mas_reciente <- max(dataset$foto_mes)
-# Calcula los pesos utilizando una caída exponencial inversa
-dataset$weights <- exp(-abs(dataset$foto_mes - mes_mas_reciente) / escala) * dataset$weights
-
-
 # valores posibles
 #  "MachineLearning"  "EstadisticaClasica" "Ninguno"
 PARAM$metodo <- "MachineLearning"
